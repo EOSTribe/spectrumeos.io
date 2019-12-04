@@ -1,0 +1,100 @@
+
+
+#royal_preloader.royal_preloader_progress .royal_preloader_meter,
+.hero-text p:before,
+.section-title h2:before,
+.section-title h4:before,
+#cd-zoom-in, #cd-zoom-out,
+#ajax-form button:hover,
+.comments button:hover,
+.con-details:hover .icon,
+.sidebar input:active,
+.sidebar input:focus,
+.link-tag a:hover,
+.shop-item  .link-items a:hover,
+.shop-item .hot,
+.sin-shop-item .item-text-wrap .button:hover{
+	background-color:#cfa144;
+}
+ul.slimmenu li a:hover,
+#sync2 .synced .item {
+    border-bottom:1px solid #cfa144;
+}
+ul.slimmenu li a.mPS2id-highlight,
+#sync2 .item:hover h6,
+#sync2 .synced .item h6,
+#filter li .current,
+#filter li a:hover,
+.post h6:hover,
+.post .subtext a,
+.all-news-link:hover h6,
+.counters h6 span,
+.footer-down p span,
+.con-details .icon,
+.comm-number p a,
+.name-aut-replay a,
+.link-recents a:hover,
+.shop-item .price,
+.shop-item h6:hover,
+.sin-shop-item .item-text-wrap h3 {
+	color:#cfa144;
+}
+#ajax-form textarea:focus,
+#ajax-form input:focus,
+#ajax-form textarea:active,
+#ajax-form input:active {	
+	border-bottom:1px solid #cfa144;
+}
+.comments textarea:focus,
+.comments input:focus,
+.comments textarea:active,
+.comments input:active {	
+	border-bottom:1px solid #cfa144;
+}
+.con-details .icon {
+	border:1px solid #cfa144;
+}
+.sidebar input:-ms-input-placeholder  {
+	color:#cfa144;
+}
+.sidebar input::-moz-placeholder  {
+	color:#cfa144;
+}
+.sidebar input:-moz-placeholder  {
+	color:#cfa144;
+}
+.sidebar input::-webkit-input-placeholder  {
+	color:#cfa144;
+}
+
+
+
+
+
+
+::selection {
+	background: #cfa144;
+}
+::-moz-selection {
+	background: #cfa144;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

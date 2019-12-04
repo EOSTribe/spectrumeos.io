@@ -1,0 +1,237 @@
+﻿<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]>
+<!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+	<meta charset="utf-8">
+	<title>Spectrum API for EOSIO</title>
+	<meta name="description" content="Spectrum streaming API for EOSIO Blockchain">
+	<link rel="stylesheet" href="css/font-awesome.css" />
+	<style>
+		#code-container { width: 1000px; }
+		#footer { 
+			width: 100%; 
+			height: 40px; 
+			padding: 20px;
+			background-color: lightblue; 
+		}
+		.CodeMirror-lines { background-color: #F3FFF4; }
+		.button {
+  			background-color: #4CAF50; /* Green */
+  			border: none;
+  			color: white;
+  			padding: 15px 32px;
+  			text-align: center;
+  			text-decoration: none;
+  			display: inline-block;
+  			font-size: 16px;
+		}
+		h1 {
+			font-size: 40px;
+			font-color: lightgrey;
+		}
+		#telos-check {
+			visibility: visible;
+		}
+		#worbli-check {
+			visibility: hidden;
+		}
+		#lynx-check {
+			visibility: hidden;
+		}
+		#wax-check {
+			visibility: hidden;
+		}
+		#bos-check {
+			visibility: hidden;
+		}
+		#eos-check {
+			visibility: hidden;
+		}
+	</style>
+	<script type="text/javascript" src="js/jquery-2.2.0.min.js"></script>		
+	<script type="text/javascript" src="js/modernizr.custom.js"></script> 
+	<script src="codemirror/lib/codemirror.js"></script>
+	<link rel="stylesheet" href="codemirror/lib/codemirror.css">
+	<script src="codemirror/mode/javascript/javascript.js"></script>
+	<script src="https://spectrum-client.s3.amazonaws.com/spectrum.js"></script>
+</head>
+<body>
+	<h1>Spectrum - streaming API for EOSIO Blockchains.</h1>
+	<img src="images/spectrum.jpg" height=250>
+	<img src="images/spectrum-eostribe-eosusa.png" height=250>
+	<h3>To allow dApp developers to subscribe and receive events in real time on multiple EOSIO chains.</h3>
+	<div><img src="images/spectrum-diagram.jpg"/></div>
+	<h2>Spectrum API supports 4 streaming API endpoints:</h2>
+	<div id="code-container">
+	<table width="100%">
+		<tr><td width="40%">
+		<div id="telos-check"><input type="radio" name="chain" value="telos" onChange="onStateChange()" checked> Telos</div>
+		<div id="worbli-check"><input type="radio" name="chain" value="worbli" onChange="onStateChange()"> Worbli</div>
+		<div id="lynx-check"><input type="radio" name="chain" value="lynx" onChange="onStateChange()"> Lynx</div>
+		<div id="wax-check"><input type="radio" name="chain" value="wax" onChange="onStateChange()"> WAX</div>
+		<div id="bos-check"><input type="radio" name="chain" value="bos" onChange="onStateChange()"> BOS</div>
+		<div id="eos-check"><input type="radio" name="chain" value="eos" onChange="onStateChange()"> EOS</div>
+		</td><td width="60%">
+		<input type="checkbox" id="get_blocks"  onChange="onStateChange()" checked> get_blocks<br>
+		<input type="checkbox" id="get_actions" onChange="onStateChange()"> get_actions<br>
+		<input type="checkbox" id="get_transaction" onChange="onStateChange()"> get_transaction<br>
+		<input type="checkbox" id="get_table_rows" onChange="onStateChange()"> get_table_rows<br>
+		</td></tr>
+	</table>
+	<h3>JavaScript client code samples:</h3>
+	<h5>Import Spectrum library:<br> &lt;script src="https://spectrum-client.s3.amazonaws.com/spectrum.js"&gt;&lt;/script&gt;</h5>
+	<div id="javascript-demo">
+		<textarea id="js-client-code"></textarea>
+		<input type="button" class="button" value="Run" onClick="runDemoCode(this)">
+		<input type="button" class="button" value="Reset" onClick="location.reload()">
+	</div>
+	<h3>Log window:</h3>
+	<div id="log">...</div>
+	<h3>Spectrum Architecture</h3>
+	<p>Spectrum API supports streaming API over web socket as well as traditional History Search API over REST:</p>
+	<img src="images/spectrum-architecture.png">
+	<p>Spectrum API is implemented in Java with scalability and security in mind. Spectrum is relaying on State History and Chronicle module for underlying blocks and transactions processing with fork handling. Spectrum is fully EOSIO v1.8 compliant.</p>
+	<h3>Additional documentation and contacts</h3>
+	<p>Please see Spectrum API related posts for additional information and code samples:<br>
+		<a href="https://steemit.com/@eostribe/">https://steemit.com/@eostribe/</a></p>
+	<p>Telegram group: <a href="https://t.me/joinchat/GCDtvROkHhZuIm2wPBG1Pw">Spectrum Tech Group</a></p>
+	<p>Support email: support@spectrumeos.io</p>
+</div>
+<div id="footer">
+	<p>Brought to you by EOS Tribe + EOS USA Block Producers</p>
+</div>
+<script>	
+//Init state:	
+onStateChange();
+
+var myCodeMirror = CodeMirror.fromTextArea(document.getElementById("js-client-code"));
+
+var telosSocket = new WebSocket("wss://telos.spectrumeos.io/streaming");
+var worbliSocket = new WebSocket("wss://worbli.spectrumeos.io/streaming");
+var lynxSocket = new WebSocket("wss://lynx.spectrumeos.io/streaming");
+var waxSocket = new WebSocket("wss://wax.spectrumeos.io/streaming");
+var bosSocket = new WebSocket("wss://bos.spectrumeos.io/streaming");
+var eosSocket = new WebSocket("wss://eos.spectrumeos.io/streaming");
+
+setOpenCloseErrorHandlers(telosSocket, "telos");
+setOpenCloseErrorHandlers(worbliSocket, "worbli");
+setOpenCloseErrorHandlers(lynxSocket, "lynx");
+setOpenCloseErrorHandlers(waxSocket, "wax");
+setOpenCloseErrorHandlers(bosSocket, "bos");
+setOpenCloseErrorHandlers(eosSocket, "eos");
+
+function setOpenCloseErrorHandlers(socket, name) {
+	socket.onopen = function(event) {
+		document.getElementById(name+"-check").style.visibility = "visible";
+	}
+	socket.onclose = function(event) {
+		document.getElementById(name+"-check").style.visibility = "hidden";
+	}
+	socket.onerror = function(err) {
+		document.getElementById(name+"-check").style.visibility = "hidden";
+	}
+}
+
+function onStateChange() {
+	var chain = getSelectedChain();
+	var demobox = document.getElementById("js-client-code");
+	var getblocks = document.getElementById("get_blocks").checked;
+	var getactions = document.getElementById("get_actions").checked;
+	var gettransaction = document.getElementById("get_transaction").checked;
+	var gettablerows = document.getElementById("get_table_rows").checked;
+	var content = "var chain = \""+chain+"\";\n"+
+		"var apikey = \"test-api-key\";\n"+
+		"var onOpenHandler = function(e) { \n	console.log(\"[open] Connection established\"); \n};\n"+
+		"var onMessageHandler = function(event) {\n	console.log(event.data);\n	};\n"+
+		"var onCloseHandler = function(event) {\n	console.log(\"[close] Connection closed\");\n	};\n"+
+		"var onErrorHandler = function(error) {\n	console.log(\"[error] ${error.message}\");\n	};\n"+
+		"var socket = open_connection(chain, apikey, onOpenHandler, onMessageHandler, onCloseHandler, onErrorHandler);\n\n";
+	if(getblocks) {
+		content += "get_blocks(socket);\n\n";
+	}
+	if(getactions) {
+		content += "get_actions(socket, \"eosio\", [\"transfer\",\"buyram\"]);\n\n";
+	}
+	if(gettransaction) {
+		content += "get_transaction(socket, \"eosio\");\n\n";
+	}
+	if(gettablerows) {
+		content += "get_table_rows(socket, \"eosio\", \"table\", \"scope\");\n\n";
+	}
+	demobox.value = content;
+	if(myCodeMirror) {
+		myCodeMirror.setValue(demobox.value);
+	}
+}
+
+function runDemoCode(button) {
+	var chain = getSelectedChain();
+	var getblocks = document.getElementById("get_blocks").checked;
+	var getactions = document.getElementById("get_actions").checked;
+	var gettransaction = document.getElementById("get_transaction").checked;
+	var gettablerows = document.getElementById("get_table_rows").checked;
+	var socket;
+	if(chain == "telos") {
+		socket = telosSocket;
+	} else if(chain == "worbli") {
+		socket = worbliSocket;
+	} else if(chain == "lynx") {
+		socket = lynxSocket;
+	} else if(chain == "wax") {
+		socket = waxSocket;
+	} else if(chain == "bos") {
+		socket = bosSocket;
+	} else if(chain == "eos") {
+		socket = eosSocket;
+	} 
+	if(socket) {
+		resetMessageHandlers();
+		socket.onmessage = function(event) {	
+			html_log(event.data);	
+		};
+		if(getblocks) {
+			get_blocks(socket);
+		}
+		if(getactions) {
+			get_actions(socket, "eosio", ["transfer","buyram"]);
+		}
+		if(gettransaction) {
+			get_transaction(socket, "eosio");
+		}
+		if(gettablerows) {
+			//FIXME: get_table_rows(socket, "eosio", "table", "scope");
+		}
+		// Disable Run button:
+		button.disabled = true;
+	} else {
+		alert("Failed to get socket connection for "+chain);
+	}
+}
+
+function resetMessageHandlers() {
+	if(telosSocket) telosSocket.onmessage = null;
+	if(worbliSocket) worbliSocket.onmessage = null;
+	if(lynxSocket) lynxSocket.onmessage = null;
+	if(waxSocket) waxSocket.onmessage = null;
+	if(bosSocket) bosSocket.onmessage = null;
+	if(eosSocket) eosSocket.onmessage = null;
+}
+
+function getSelectedChain() { 
+    var ele = document.getElementsByName('chain'); 
+    for(i = 0; i < ele.length; i++) { 
+        if(ele[i].checked) {
+	        return ele[i].value; 
+        }
+    }
+ } 
+
+function html_log(data) {
+  var divLog = document.getElementById("log");
+  divLog.innerHTML = "<p>" + data + "</p>";
+}
+ 
+</script>
+</body>
+</html>
