@@ -66,12 +66,12 @@
 	<div id="code-container">
 	<table width="100%">
 		<tr><td width="40%">
-		<div id="telos-check"><input type="radio" name="chain" value="telos" onChange="onStateChange()" checked> Telos</div>
-		<div id="worbli-check"><input type="radio" name="chain" value="worbli" onChange="onStateChange()"> Worbli</div>
-		<div id="lynx-check"><input type="radio" name="chain" value="lynx" onChange="onStateChange()"> Lynx</div>
-		<div id="wax-check"><input type="radio" name="chain" value="wax" onChange="onStateChange()"> WAX</div>
-		<div id="bos-check"><input type="radio" name="chain" value="bos" onChange="onStateChange()"> BOS</div>
-		<div id="eos-check"><input type="radio" name="chain" value="eos" onChange="onStateChange()"> EOS</div>
+		<input type="radio" name="chain" value="telos" onChange="onStateChange()" checked> Telos <span id="telos-state"></span><br/>
+		<input type="radio" name="chain" value="worbli" onChange="onStateChange()"> Worbli <span id="worbli-state"></span><br/>
+		<input type="radio" name="chain" value="lynx" onChange="onStateChange()"> Lynx <span id="lynx-state"></span><br/>
+		<input type="radio" name="chain" value="wax" onChange="onStateChange()"> WAX <span id="wax-state"></span><br/>
+		<input type="radio" name="chain" value="bos" onChange="onStateChange()"> BOS <span id="bos-state"></span><br/>
+		<input type="radio" name="chain" value="eos" onChange="onStateChange()"> EOS <span id="eos-state"></span><br/>
 		</td><td width="60%">
 		<input type="checkbox" id="get_blocks"  onChange="onStateChange()" checked> get_blocks<br>
 		<input type="checkbox" id="get_actions" onChange="onStateChange()"> get_actions<br>
@@ -123,13 +123,13 @@ setOpenCloseErrorHandlers(eosSocket, "eos");
 
 function setOpenCloseErrorHandlers(socket, name) {
 	socket.onopen = function(event) {
-		document.getElementById(name+"-check").style.visibility = "visible";
+		document.getElementById(name+"-state").innerHTML = "<font color='green'>[ON]</font>";
 	}
 	socket.onclose = function(event) {
-		document.getElementById(name+"-check").style.visibility = "hidden";
+		document.getElementById(name+"-state").innerHTML = "<font color='red'>[OFF]</font>";
 	}
 	socket.onerror = function(err) {
-		document.getElementById(name+"-check").style.visibility = "hidden";
+		document.getElementById(name+"-state").innerHTML = "<font color='red'>[OFF]</font>";
 	}
 }
 
