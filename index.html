@@ -30,24 +30,20 @@
 			font-size: 40px;
 			font-color: lightgrey;
 		}
-		#telos-check {
-			visibility: visible;
+		#account-div {
+			display: none;
 		}
-		#worbli-check {
-			visibility: hidden;
+		#actions-div {
+			display: none;
 		}
-		#lynx-check {
-			visibility: hidden;
+		#table-div {
+			display: none;
 		}
-		#wax-check {
-			visibility: hidden;
+		#scope-div {
+			display: none;
 		}
-		#bos-check {
-			visibility: hidden;
-		}
-		#eos-check {
-			visibility: hidden;
-		}
+
+
 	</style>
 	<script type="text/javascript" src="js/jquery-2.2.0.min.js"></script>		
 	<script type="text/javascript" src="js/modernizr.custom.js"></script> 
@@ -82,9 +78,13 @@
 	<h3>JavaScript client code samples:</h3>
 	<h5>Import Spectrum library:<br> &lt;script src="https://spectrum-client.s3.amazonaws.com/spectrum.js"&gt;&lt;/script&gt;</h5>
 	<div id="javascript-demo">
-		<textarea id="js-client-code"></textarea>
+		<div id="account-div">Account: <input type="text" name="account" id="account" value="eosio" onChange="onStateChange()"></div>
+		<div id="actions-div">Actions: <input type="text" name="actions" id="actions" value="transfer, buyram" onChange="onStateChange()"></div>
+		<div id="table-div">Table: <input type="text" name="table" id="table" value="table" onChange="onStateChange()"></div>
+		<div id="scope-div">Scope: <input type="text" name="scope" id="scope" value="scope" onChange="onStateChange()"></div>
+		<br/><textarea id="js-client-code"></textarea>
 		<input type="button" class="button" value="Run" onClick="runDemoCode(this)">
-		<input type="button" class="button" value="Reset" onClick="location.reload()">
+		<input type="button" class="button" value="Reload" onClick="location.reload()">
 	</div>
 	<h3>Log window:</h3>
 	<div id="log">...</div>
@@ -151,13 +151,27 @@ function onStateChange() {
 		content += "get_blocks(socket);\n\n";
 	}
 	if(getactions) {
-		content += "get_actions(socket, \"eosio\", [\"transfer\",\"buyram\"]);\n\n";
-	}
+		document.getElementById("account-div").style.display = "block";
+		document.getElementById("actions-div").style.display = "block";
+		var account = document.getElementById("account").value;
+		var actions = document.getElementById("actions").value;
+		actions = actions.replace(/ /g,'');
+		actions = actions.replace(/,/g, '\",\"');
+		content += "get_actions(socket, \""+account+"\", [\""+actions+"\"]);\n\n";
+	} 
 	if(gettransaction) {
-		content += "get_transaction(socket, \"eosio\");\n\n";
-	}
+		document.getElementById("account-div").style.display = "block";
+		var account = document.getElementById("account").value;
+		content += "get_transaction(socket, \""+account+"\");\n\n";
+	} 
 	if(gettablerows) {
-		content += "get_table_rows(socket, \"eosio\", \"table\", \"scope\");\n\n";
+		document.getElementById("account-div").style.display = "block";
+		document.getElementById("table-div").style.display = "block";
+		document.getElementById("scope-div").style.display = "block";
+		var account = document.getElementById("account").value;
+		var table = document.getElementById("table").value;
+		var scope = document.getElementById("scope").value;
+		content += "get_table_rows(socket, \""+account+"\", \""+table+"\", \""+scope+"\");\n\n";
 	}
 	demobox.value = content;
 	if(myCodeMirror) {
@@ -194,13 +208,21 @@ function runDemoCode(button) {
 			get_blocks(socket);
 		}
 		if(getactions) {
-			get_actions(socket, "eosio", ["transfer","buyram"]);
+			var account = document.getElementById("account").value;
+			var actions = document.getElementById("actions").value;
+			actions = actions.replace(/ /g,'');
+			var actionsArr = actions.split(',');
+			get_actions(socket, account, actionsArr);
 		}
 		if(gettransaction) {
-			get_transaction(socket, "eosio");
+			var account = document.getElementById("account").value;
+			get_transaction(socket, account);
 		}
 		if(gettablerows) {
-			//FIXME: get_table_rows(socket, "eosio", "table", "scope");
+			var account = document.getElementById("account").value;
+			var table = document.getElementById("table").value;
+			var scope = document.getElementById("scope").value;
+			get_table_rows(socket, account, table, scope);
 		}
 		// Disable Run button:
 		button.disabled = true;
