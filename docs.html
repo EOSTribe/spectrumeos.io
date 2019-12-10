@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]>
+<!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+	<meta charset="utf-8">
+	<title>Spectrum API for EOSIO</title>
+	<meta name="description" content="Spectrum streaming API for EOSIO Blockchain - Documentation">
+	<style>
+		#footer { 
+			width: 100%; 
+			height: 40px; 
+			padding: 20px;
+			background-color: lightblue; 
+		}
+	</style>
+</head>
+<body>
+	<h1>Spectrum API Documentation</h1>
+	<h3>Available Spectrum endpoints</h3>
+	<ul>
+		<li>Telos: wss://telos.spectrumeos.io/streaming [Online]</li>
+		<li>Worbli: wss://worbli.spectrumeos.io/streaming [Online]</li>
+		<li>Lynx: wss://lynx.spectrumeos.io/streaming [Online]</li>
+		<li>WAX: wss://wax.spectrumeos.io/streaming [Online]</li>
+		<li>EOS: wss://eos.spectrumeos.io/streaming [Syncing]</li>
+		<li>BOS: wss://bos.spectrumeos.io/streaming [Coming soon]</li>
+	</ul>
+	<h2>Code samples of Spectrum clients</h2>
+<h3># get_actions endopoint</h3>
+<p>Here is the sample subscription message for get_actions endpoint:</p>
+<pre>
+{
+  "apikey":"test-api-key",
+  "event":"subscribe",
+  "type":"get_actions",
+  "data":  {
+              "account":"eostribeprod",
+              “actions":[“transfer”,”buyram”]
+   }
+}
+</pre>
+<p>Fields description for get_actions:</p>
+<ul>
+<li>event - type of events, there are two variants: “subscribe” and “unsubscribe”. Required [String].</li>
+<li>type - type of endpoint. Required [String].</li>
+<li>data - Contents of this object depends on type argument. Required for get_actions.</li>
+<li>account - name of account. Required [String].</li>
+<li>actions - List of actions name. [Object]. If actions are not specified - all actions will be matched.</li>
+</ul>
+<h4>Sample Python client for get_actions:</h4>
+<pre>
+import json
+from websocket import create_connection
+
+path="streaming"
+url = "wss://telos.spectrumeos.io/"+path
+
+actionsList = ["transfer","buyram"]
+data = {"account":"eostribeprod"}
+messageBody = {
+   "apikey":"test-api-key",
+   "event":"subscribe",
+   "type":"get_actions",
+    "data": data
+ }
+ws = create_connection(url)
+messageJson = json.dumps(messageBody)
+ws.send(messageJson)
+
+while True:
+   response = ws.recv()
+   print(response)
+ws.close()
+</pre>
+<h4>Sample JS Client code for get_actions:</h4>
+<pre>
+let socket = new WebSocket("wss://telos.spectrumeos.io/streaming");
+
+var actionsList = ["transfer","buyram"]; 
+var messageBody = {
+   "apikey":"test-api-key",
+   "event":"subscribe",
+   "type":"get_actions",
+   "data": {"account":"eosio"}
+};
+
+
+socket.onopen = function(e) {
+  console.log("[open] Connection established");
+  console.log("Sending to server: "+JSON.stringify(messageBody));
+  socket.send(JSON.stringify(messageBody));
+};
+
+socket.onmessage = function(event) {
+  html_log("[message] Data received from server: "+event.data);
+};
+
+socket.onclose = function(event) {
+  if (event.wasClean) {
+    html_log("[close] Connection closed cleanly, code=${event.code} reason=${event.reason}");
+  } else {
+    html_log("[close] Connection died");
+  }
+};
+
+socket.onerror = function(error) {
+  html_log("[error] ${error.message}");
+};
+
+function html_log(data) {
+  document.getElementById("log").innerHTML = data;
+}
+</pre>
+<h4>Sample NodeJS Client code for get_actions:</h4>
+<pre>
+global.fetch = require('node-fetch')
+global.WebSocket = require('ws')
+
+const telosTrxStatus =  () =>{
+    const messageBody = {
+          "apikey": "test-api-key",
+          "event": "subscribe",
+          "type": "get_actions",
+          "data": {
+              "account": "eosio", 
+              "actions": ["transfer"]
+          }
+      }
+      const  socket = new WebSocket("wss://telos.spectrumeos.io/streaming")
+    
+      socket.onopen = () => {
+          socket.send(JSON.stringify(messageBody));
+      }
+  
+      socket.onmessage = (event) => {
+          console.log('Telos websocket:', JSON.parse(event.data))
+    }
+    socket.onclose = (event)=> {
+      console.log("Telos socket connection closed:" +event.data)
+    }
+    socket.onerror = function(error) {
+          console.log("Telos websocket got error: " +error.message)
+      }
+  
+}
+
+telosTrxStatus()
+</pre>
+<h3># get_blocks endopoint</h3>
+<p>Request message format for get_blocks endpoint:</p>
+<pre>
+{
+  "apikey":"test-api-key",
+  "event":"subscribe",
+  "type":"get_blocks"
+}
+</pre>
+<p>Fields description:</p>
+<ul>
+<li>apikey - key for access and accounting, not using on testnet.[String]</li>
+<li>event - type of event, there are two variants “subscribe” and “unsubscribe”. To subscribe necessary using "subscribe" * value - this field is mandatory. [String].</li>
+<li>type - type of endpoint. Required [String].</li>
+</ul>
+<h4>Sample Python client for get_blocks:</h4>
+<pre>
+import json
+import pprint
+from websocket import create_connection
+
+path="streaming"
+url = "wss://telos.spectrumeos.io/"+path
+
+messageBody = {
+   "apikey":"test-api-key",
+             "event":"subscribe",
+              "type":"get_blocks"
+             }
+
+ws = create_connection(url)
+ws.send(json.dumps(messageBody))
+
+while True:
+   pprint.pprint(json.loads(ws.recv()))
+ws.close()
+</pre>
+<h4>Sample JS Client code for get_blocks:</h4>
+<pre>
+let socket = new WebSocket("wss://telos.spectrumeos.io/streaming");
+
+
+var messageBody = {
+   "apikey":"test-api-key",
+   "event":"subscribe",
+   "type":"get_blocks"
+};
+
+socket.onopen = function(e) {
+  html_log("[open] Connection established");
+  html_log("[subscribe] sending message to server");
+  socket.send(JSON.stringify(messageBody));
+};
+
+socket.onmessage = function(event) {
+  html_log("[message] Data received from server: "+event.data);
+};
+
+socket.onclose = function(event) {
+  if (event.wasClean) {
+    html_log("[close] Connection closed cleanly, code=${event.code} reason=${event.reason}");
+  } else {
+    html_log("[close] Connection died");
+  }
+};
+
+socket.onerror = function(error) {
+  html_log("[error] ${error.message}");
+};
+
+function html_log(data) {
+  document.getElementById("log").innerHTML = data;
+}
+</pre>
+<h3># get_transaction endopoint</h3>
+<p>Here is sample subscription message for get_transaction endpoint:</p>
+<pre>
+{
+  "apikey":"test-api-key",
+  "event":"subscribe",
+  "type":"get_transaction",
+  "data": {"account":"eosio"}
+}
+</pre>
+<p>Fields description for get_transaction:</p>
+<ul>
+<li>apikey - key for access and accounting, not using on testnet.[String]</li>
+<li>event - type of event, there are two variants “subscribe” and “unsubscribe”. To subscribe necessary using "subscribe" value . This field is mandatory. [String].</li>
+<li>type - type of endpoint. Required [String].</li>
+<li>data - Contents of this object depends on type argument. Required for get_transaction.</li>
+<li>account - name of account. Required [String].</li>
+</ul>
+<h4>Sample client in Python for get_transaction:</h4>
+<pre>
+import json
+import pprint
+
+from websocket import create_connection
+
+path="streaming"
+url = "wss://telos.spectrumeos.io/"+path
+
+data = {"account":"eosio"}
+
+messageBody ={
+   "apikey":"test-api-key",
+             "event":"subscribe",
+              "type":"get_transaction",
+             "data": data
+             }
+ws = create_connection(url)
+messageJson = json.dumps(messageBody)
+ws.send(messageJson)
+
+while True:
+   pprint.pprint(json.loads(ws.recv()))
+ws.close()
+</pre>
+<h4>Sample JS Client for get_transaction:</h4>
+<pre>
+let socket = new WebSocket("wss://telos.spectrumeos.io/streaming");
+
+var messageBody ={
+              "apikey":"test-api-key",
+              "event":"subscribe",
+              "type":"get_transaction",
+              "data": {"account":"eosio"}
+             };
+
+
+socket.onopen = function(e) {
+  console.log("[open] Connection established");
+  console.log("Sending to server: "+JSON.stringify(messageBody));
+  socket.send(JSON.stringify(messageBody));
+};
+
+socket.onmessage = function(event) {
+  html_log("[message] Data received from server: "+event.data);
+};
+
+socket.onclose = function(event) {
+  if (event.wasClean) {
+    html_log("[close] Connection closed cleanly, code=${event.code} reason=${event.reason}");
+  } else {
+    html_log("[close] Connection died");
+  }
+};
+
+socket.onerror = function(error) {
+  html_log("[error] ${error.message}");
+};
+
+function html_log(data) {
+  document.getElementById("log").innerHTML = data;
+}
+</pre>
+<h3># get_table_rows endopoint</h3>
+<p>Below is the sample subscription message for the newly added get_table_rows endpoint:</p>
+<pre>
+{
+  "apikey":"test-api-key",
+  "event":"subscribe",
+  "type":"get_table_rows",
+  "data": {
+    "code":"account name",
+    "table":"table name",
+    "scope":"scope name"
+   }
+}
+</pre>
+<p>Fields description for get_table_rows:</p>
+<ul>
+<li>apikey - key for access and accounting, not used on testnet.[String]</li>
+<li>event - type of event, there are two variants “subscribe” and “unsubscribe”. To subscribe necessary using "subscribe" value . This field is mandatory. [String].</li>
+<li>type - type of endpoint. Required [String].</li>
+<li>data - Contents of this object depends on type argument:</li>
+<ul>
+<li>code - name of account. Required [String].</li>
+<li>table - name of required table;</li>
+<li>scope - The area of the tables where the table is stored.</li>
+</ul>
+</ul>
+<p>Sample client in Python for get_table_rows:</p>
+<pre>
+import json
+import pprint
+
+from websocket import create_connection
+
+path="streaming"
+url = "wss://telos.spectrumeos.io/"+path
+
+messageBody ={
+   "apikey":"test-api-key",
+             "event":"subscribe",
+             "type":"get_table_rows",
+             "data": data
+             }
+ws = create_connection(url)
+messageJson = json.dumps(messageBody)
+ws.send(messageJson)
+
+while True:
+   pprint.pprint(json.loads(ws.recv()))
+ws.close()
+</pre>
+
+<h2>Single JS library for all endpoints and chains:</h2>
+<pre>
+var chain = "telos"; # eos | worbli | lynx | worbli | ...
+var apikey = "test-api-key"; # real API key will be required for EOS chain
+
+var onOpenHandler = function(e) { 
+	console.log("[open] Connection established"); 
+};
+
+var onMessageHandler = function(event) {
+	console.log(event.data);
+};
+
+var onCloseHandler = function(event) {
+	console.log("[close] Connection closed");
+};
+
+var onErrorHandler = function(error) {
+	console.log("[error] ${error.message}");
+};
+
+var socket = open_connection(chain, apikey, onOpenHandler, onMessageHandler, onCloseHandler, onErrorHandler);
+
+get_blocks(socket);
+
+get_actions(socket, "eosio", ["transfer","buyram"]);
+
+get_transaction(socket, "eosio");
+
+get_table_rows(socket, "eosio", "table", "scope");
+</pre>
+<h3>Additional documentation:</h3>
+	<p><a href="index.html">Homepage with demo of running JS client.</a></p>
+	<p>GitHub: <a href="https://github.com/EOSTribe/websocket-endpoint">Spectrum API Java websocket endpoint.</a></p>
+	<p>Please see our SteemIt posts for additional information:<br>
+		<a href="https://steemit.com/@eostribe/">https://steemit.com/@eostribe/</a></p>
+	<p>Telegram group: <a href="https://t.me/joinchat/GCDtvROkHhZuIm2wPBG1Pw">Spectrum Tech Group</a></p>
+	<p>Support email: support@spectrumeos.io</p>
+	<div id="footer">
+	<p>Brought to you by EOS Tribe + EOS USA Block Producers</p>
+</div>
+</body>
+</html>
