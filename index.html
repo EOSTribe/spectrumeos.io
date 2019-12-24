@@ -7,6 +7,7 @@
 	<title>Spectrum API for EOSIO</title>
 	<meta name="description" content="Spectrum streaming API for EOSIO Blockchain">
 	<link rel="stylesheet" href="css/font-awesome.css" />
+	<link rel="stylesheet" href="css/main.css" />
 	<style>
 		#code-container { width: 1000px; }
 		#footer { 
@@ -52,57 +53,219 @@
 	<script src="codemirror/mode/javascript/javascript.js"></script>
 	<script src="https://spectrum-client.s3.amazonaws.com/spectrum.js"></script>
 </head>
-<body>
-	<h1>Spectrum - streaming API for EOSIO Blockchains.</h1>
-	<img src="images/spectrum.jpg" height=250>
-	<img src="images/spectrum-eostribe-eosusa.png" height=250>
-	<h3>To allow dApp developers to subscribe and receive events in real time on multiple EOSIO chains.</h3>
-	<div><img src="images/spectrum-diagram.jpg"/></div>
-	<h2>Spectrum API supports 4 streaming API endpoints:</h2>
-	<div id="code-container">
-	<table width="100%">
-		<tr><td width="40%">
-		<input type="radio" name="chain" value="telos" onChange="onStateChange()" checked> Telos <span id="telos-state"></span><br/>
-		<input type="radio" name="chain" value="worbli" onChange="onStateChange()"> Worbli <span id="worbli-state"></span><br/>
-		<input type="radio" name="chain" value="lynx" onChange="onStateChange()"> Lynx <span id="lynx-state"></span><br/>
-		<input type="radio" name="chain" value="wax" onChange="onStateChange()"> WAX <span id="wax-state"></span><br/>
-		<input type="radio" name="chain" value="bos" onChange="onStateChange()"> BOS <span id="bos-state"></span><br/>
-		<input type="radio" name="chain" value="eos" onChange="onStateChange()"> EOS <span id="eos-state"></span><br/>
-		</td><td width="60%">
-		<input type="checkbox" id="get_blocks"  onChange="onStateChange()" checked> get_blocks<br>
-		<input type="checkbox" id="get_actions" onChange="onStateChange()"> get_actions<br>
-		<input type="checkbox" id="get_transaction" onChange="onStateChange()"> get_transaction<br>
-		<input type="checkbox" id="get_table_rows" onChange="onStateChange()"> get_table_rows<br>
-		</td></tr>
-	</table>
-	<h3>JavaScript client code samples:</h3>
-	<h5>Import Spectrum library:<br> &lt;script src="https://spectrum-client.s3.amazonaws.com/spectrum.js"&gt;&lt;/script&gt;</h5>
-	<div id="javascript-demo">
-		<div id="account-div">Account: <input type="text" name="account" id="account" value="eosio" onChange="onStateChange()"></div>
-		<div id="actions-div">Actions: <input type="text" name="actions" id="actions" value="transfer, buyram" onChange="onStateChange()"></div>
-		<div id="table-div">Table: <input type="text" name="table" id="table" value="table" onChange="onStateChange()"></div>
-		<div id="scope-div">Scope: <input type="text" name="scope" id="scope" value="scope" onChange="onStateChange()"></div>
-		<br/><textarea id="js-client-code"></textarea>
-		<input type="button" class="button" value="Run" onClick="runDemoCode(this)">
-		<input type="button" class="button" value="Reload" onClick="location.reload()">
+<body class="home-page">
+	<div class="wrapper">
+		<header class="header">
+			<div class="container">
+				<div class="header__inner">
+				</div>
+			</div>
+		</header>
+		<main>
+			<div class="home-page__inner">
+				<section class="home-start">
+					<div class="container">
+						<div class="home-start__inner">
+							<h1 class="home-start__head">Spectrum - streaming API for EOSIO Blockchains.</h1>
+							<img src="images/spectrum.jpg" height=250>
+							<img src="images/spectrum-eostribe-eosusa.png" height=250>
+							<p class="home-start__text">To allow dApp developers to subscribe and receive events in real time on multiple EOSIO chains.</p class="home-start__text">
+						</div>
+					</div>
+				</section>
+				<section class="home-animation">
+					<div class="container">
+						<div class="home-animation__inner">
+							<div class="spectrum-animation speca">
+								<div class="speca__wrapper">
+									<div class="speca__bg">
+										<div class="speca__roads speca-roads">
+											<div class="speca-roads__chain-places">
+												<div class="speca-roads__chain-place"></div>
+												<div class="speca-roads__chain-place"></div>
+												<div class="speca-roads__chain-place"></div>
+												<div class="speca-roads__chain-place"></div>
+												<div class="speca-roads__chain-place"></div>
+												<div class="speca-roads__chain-place"></div>
+											</div>
+											<div class="speca-roads__chain-road">
+												<div class="speca-roads__chain-dot"></div>
+												<div class="speca-roads__chain-dot"></div>
+												<div class="speca-roads__chain-dot"></div>
+												<div class="speca-roads__chain-dot"></div>
+												<div class="speca-roads__chain-dot"></div>
+												<div class="speca-roads__chain-dot"></div>
+											</div>
+											<div class="speca-roads__spectrum-place"></div>
+											<div class="speca-roads__client-road"></div>
+											<div class="speca-roads__client-place"></div>
+										</div>
+										<div class="speca__bg-objects bg-objects">
+											<div class="bg-objects__card">
+												<div class="bg-objects__card-text"></div>
+												<div class="bg-objects__card-text"></div>
+												<div class="bg-objects__card-text"></div>
+												<div class="bg-objects__card-text"></div>
+												<div class="bg-objects__card-text"></div>
+												<div class="bg-objects__card-text"></div>
+												<div class="bg-objects__card-text"></div>
+											</div>
+											<div class="bg-objects__calculator">
+												<div class="bg-objects__calculator-shadow"></div>
+												<div class="bg-objects__calculator-screen"></div>
+												<div class="bg-objects__calculator-button"></div>
+												<div class="bg-objects__calculator-button"></div>
+												<div class="bg-objects__calculator-button"></div>
+												<div class="bg-objects__calculator-button"></div>
+												<div class="bg-objects__calculator-button"></div>
+												<div class="bg-objects__calculator-button"></div>
+												<div class="bg-objects__calculator-button"></div>
+												<div class="bg-objects__calculator-button"></div>
+												<div class="bg-objects__calculator-button"></div>
+												<div class="bg-objects__calculator-button"></div>
+												<div class="bg-objects__calculator-button"></div>
+												<div class="bg-objects__calculator-button"></div>
+											</div>
+											<div class="bg-objects__browser speca-browser">
+												<div class="speca-browser__header"></div>
+												<div class="speca-browser__main">
+													<div class="speca-browser__div">
+														<div class="speca-browser__text"></div>
+														<div class="speca-browser__text"></div>
+														<div class="speca-browser__text"></div>
+														<div class="speca-browser__text"></div>
+														<div class="speca-browser__text"></div>
+													</div>
+													<div class="speca-browser__div"></div>
+													<div class="speca-browser__search">
+														<div class="speca-browser__search-text"></div>
+														<div class="speca-browser__search-button"></div>
+													</div>
+												</div>
+											</div>
+											<div class="bg-objects__cart-wrapper">
+												<div class="bg-objects__cart">
+													<div class="bg-objects__cart-geometry"></div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="speca__objects speca-objects">
+										<div class="speca-objects__chains">
+											<div class="speca-objects__chain"></div>
+											<div class="speca-objects__chain"></div>
+											<div class="speca-objects__chain"></div>
+											<div class="speca-objects__chain"></div>
+											<div class="speca-objects__chain"></div>
+											<div class="speca-objects__chain"></div>
+										</div>
+										<div class="speca-objects__spectrum">
+											<div class="speca-objects__spectrum-line"></div>
+											<div class="speca-objects__spectrum-line"></div>
+											<div class="speca-objects__spectrum-line"></div>
+											<div class="speca-objects__spectrum-line"></div>
+											<div class="speca-objects__spectrum-line"></div>
+											<div class="speca-objects__spectrum-line"></div>
+										</div>
+										<div class="speca-objects__client-wrapper">
+											<div class="speca-objects__client">
+												<div class="speca-objects__client-shadow"></div>
+												<div class="speca-objects__client-header">
+													<div class="speca-objects__client-header-logo-image">
+														<div class="speca-objects__client-header-logo-line"></div>
+														<div class="speca-objects__client-header-logo-line"></div>
+														<div class="speca-objects__client-header-logo-line"></div>
+														<div class="speca-objects__client-header-logo-line"></div>
+														<div class="speca-objects__client-header-logo-line"></div>
+														<div class="speca-objects__client-header-logo-line"></div>
+													</div>
+													<div class="speca-objects__client-header-logo-text"></div>
+												</div>
+												<div class="speca-objects__client-main">
+													<div class="speca-objects__client-row"></div>
+													<div class="speca-objects__client-row"></div>
+													<div class="speca-objects__client-row"></div>
+													<div class="speca-objects__client-row"></div>
+													<div class="speca-objects__client-row"></div>
+													<div class="speca-objects__client-row"></div>
+													<div class="speca-objects__client-row"></div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+				<section class="home-generator">
+					<div class="container">
+						<div class="home-generator__inner">
+							<div>
+								<img src="images/spectrum-diagram.jpg"/>
+							</div>
+							<h2 class="home-generator__head">Spectrum API supports 4 streaming API endpoints:</h2>
+							<div id="code-container">
+							<table  class="home-generator__table" width="100%">
+								<tr><td width="40%">
+								<input type="radio" name="chain" value="telos" onChange="onStateChange()" checked> Telos <span id="telos-state"></span><br/>
+								<input type="radio" name="chain" value="worbli" onChange="onStateChange()"> Worbli <span id="worbli-state"></span><br/>
+								<input type="radio" name="chain" value="lynx" onChange="onStateChange()"> Lynx <span id="lynx-state"></span><br/>
+								<input type="radio" name="chain" value="wax" onChange="onStateChange()"> WAX <span id="wax-state"></span><br/>
+								<input type="radio" name="chain" value="bos" onChange="onStateChange()"> BOS <span id="bos-state"></span><br/>
+								<input type="radio" name="chain" value="eos" onChange="onStateChange()"> EOS <span id="eos-state"></span><br/>
+								</td><td width="60%">
+								<input type="checkbox" id="get_blocks"  onChange="onStateChange()" checked> get_blocks<br>
+								<input type="checkbox" id="get_actions" onChange="onStateChange()"> get_actions<br>
+								<input type="checkbox" id="get_transaction" onChange="onStateChange()"> get_transaction<br>
+								<input type="checkbox" id="get_table_rows" onChange="onStateChange()"> get_table_rows<br>
+								</td></tr>
+							</table>
+							<h3 class="home-generator__subhead">JavaScript client code samples:</h3>
+							<h5>Import Spectrum library:<br> &lt;script src="https://spectrum-client.s3.amazonaws.com/spectrum.js"&gt;&lt;/script&gt;</h5>
+							<div id="javascript-demo">
+								<div id="account-div">Account: <input type="text" name="account" id="account" value="eosio" onChange="onStateChange()"></div>
+								<div id="actions-div">Actions: <input type="text" name="actions" id="actions" value="transfer, buyram" onChange="onStateChange()"></div>
+								<div id="table-div">Table: <input type="text" name="table" id="table" value="table" onChange="onStateChange()"></div>
+								<div id="scope-div">Scope: <input type="text" name="scope" id="scope" value="scope" onChange="onStateChange()"></div>
+								<br/><textarea id="js-client-code"></textarea>
+								<input type="button" class="button" value="Run" onClick="runDemoCode(this)">
+								<input type="button" class="button" value="Reload" onClick="location.reload()">
+							</div>
+							<h3 class="home-generator__subhead">Log window:</h3>
+							<div id="log">...</div>
+						</div>
+					</div>
+				</section>
+				<section class="home-description">
+					<div class="container">
+						<div class="home-description__inner">
+							<h2 class="home-description__head">Spectrum Architecture</h2>
+							<p class="home-description__text">Spectrum API supports streaming API over web socket as well as traditional History Search API over REST:</p>
+							<img src="images/spectrum-architecture.png">
+							<p class="home-description__text">Spectrum API is implemented in Java with scalability and security in mind. Spectrum is relaying on State History and Chronicle module for underlying blocks and transactions processing with fork handling. Spectrum is fully EOSIO v1.8 compliant.</p>
+							<h3 class="home-description__subhead">Additional documentation:</h3>
+							<p class="home-description__text"><a href="docs.html">Code samples for all endpoints</a></p>
+							<p class="home-description__text">GitHub: <a href="https://github.com/EOSTribe/websocket-endpoint">Spectrum API Java websocket endpoint.</a></p>
+							<p class="home-description__text">Please see our SteemIt posts for additional information:<br>
+								<a href="https://steemit.com/@eostribe/">https://steemit.com/@eostribe/</a></p>
+							<p class="home-description__text">Telegram group: <a href="https://t.me/joinchat/GCDtvROkHhZuIm2wPBG1Pw">Spectrum Tech Group</a></p>
+							<p class="home-description__text">Support email: support@spectrumeos.io</p>
+						</div>
+					</div>
+				</section>
+			</div>
+		</main>
+		<footer class="footer">
+			<div class="container">
+				<div class="footer__inner">
+					<div id="footer">
+						<p>Brought to you by EOS Tribe + EOS USA Block Producers</p>
+					</div>
+				</div>
+			</div>
+		</footer>
 	</div>
-	<h3>Log window:</h3>
-	<div id="log">...</div>
-	<h3>Spectrum Architecture</h3>
-	<p>Spectrum API supports streaming API over web socket as well as traditional History Search API over REST:</p>
-	<img src="images/spectrum-architecture.png">
-	<p>Spectrum API is implemented in Java with scalability and security in mind. Spectrum is relaying on State History and Chronicle module for underlying blocks and transactions processing with fork handling. Spectrum is fully EOSIO v1.8 compliant.</p>
-	<h3>Additional documentation:</h3>
-	<p><a href="docs.html">Code samples for all endpoints</a></p>
-	<p>GitHub: <a href="https://github.com/EOSTribe/websocket-endpoint">Spectrum API Java websocket endpoint.</a></p>
-	<p>Please see our SteemIt posts for additional information:<br>
-		<a href="https://steemit.com/@eostribe/">https://steemit.com/@eostribe/</a></p>
-	<p>Telegram group: <a href="https://t.me/joinchat/GCDtvROkHhZuIm2wPBG1Pw">Spectrum Tech Group</a></p>
-	<p>Support email: support@spectrumeos.io</p>
-</div>
-<div id="footer">
-	<p>Brought to you by EOS Tribe + EOS USA Block Producers</p>
-</div>
 <script>	
 //Init state:	
 onStateChange();
@@ -257,5 +420,6 @@ function html_log(data) {
 }
  
 </script>
+<script type="text/javascript" src="js/main.js"></script>
 </body>
 </html>
