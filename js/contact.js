@@ -1,53 +1,85 @@
-	
-jQuery(document).ready(function ($) { // wait until the document is ready
-	$('#send').click(function(){ // when the button is clicked the code executes
-		$('.error').fadeOut('slow'); // reset the error messages (hides them)
+$(document).ready(function(){
+    
+    (function($) {
+        "use strict";
 
-		var error = false; // we will set this true if the form isn't valid
+    
+    jQuery.validator.addMethod('answercheck', function (value, element) {
+        return this.optional(element) || /^\bcat\b$/.test(value)
+    }, "type the correct answer -_-");
 
-		var name = $('input#name').val(); // get the value of the input field
-		if(name == "" || name == " ") {
-			$('#err-name').fadeIn('slow'); // show the error message
-			error = true; // change the error state to true
-		}
-
-		var email_compare = /^([a-z0-9_.-]+)@([da-z.-]+).([a-z.]{2,6})$/; // Syntax to compare against input
-		var email = $('input#email').val(); // get the value of the input field
-		if (email == "" || email == " ") { // check if the field is empty
-			$('#err-email').fadeIn('slow'); // error - empty
-			error = true;
-		}else if (!email_compare.test(email)) { // if it's not empty check the format against our email_compare variable
-			$('#err-emailvld').fadeIn('slow'); // error - not right format
-			error = true;
-		}
-
-		if(error == true) {
-			$('#err-form').slideDown('slow');
-			return false;
-		}
-
-		var data_string = $('#ajax-form').serialize(); // Collect data from form
-
-		$.ajax({
-			type: "POST",
-			url: $('#ajax-form').attr('action'),
-			data: data_string,
-			timeout: 6000,
-			error: function(request,error) {
-				if (error == "timeout") {
-					$('#err-timedout').slideDown('slow');
-				}
-				else {
-					$('#err-state').slideDown('slow');
-					$("#err-state").html('An error occurred: ' + error + '');
-				}
-			},
-			success: function() {
-				$('#ajax-form').slideUp('slow');
-				$('#ajaxsuccess').slideDown('slow');
-			}
-		});
-
-		return false; // stops user browser being directed to the php file
-	}); // end click function
-});
+    // validate contactForm form
+    $(function() {
+        $('#contactForm').validate({
+            rules: {
+                name: {
+                    required: true,
+                    minlength: 2
+                },
+                subject: {
+                    required: true,
+                    minlength: 4
+                },
+                number: {
+                    required: true,
+                    minlength: 5
+                },
+                email: {
+                    required: true,
+                    email: true
+                },
+                message: {
+                    required: true,
+                    minlength: 20
+                }
+            },
+            messages: {
+                name: {
+                    required: "come on, you have a name, don't you?",
+                    minlength: "your name must consist of at least 2 characters"
+                },
+                subject: {
+                    required: "come on, you have a subject, don't you?",
+                    minlength: "your subject must consist of at least 4 characters"
+                },
+                number: {
+                    required: "come on, you have a number, don't you?",
+                    minlength: "your Number must consist of at least 5 characters"
+                },
+                email: {
+                    required: "no email, no message"
+                },
+                message: {
+                    required: "um...yea, you have to write something to send this form.",
+                    minlength: "thats all? really?"
+                }
+            },
+            submitHandler: function(form) {
+                $(form).ajaxSubmit({
+                    type:"POST",
+                    data: $(form).serialize(),
+                    url:"contact_process.php",
+                    success: function() {
+                        $('#contactForm :input').attr('disabled', 'disabled');
+                        $('#contactForm').fadeTo( "slow", 1, function() {
+                            $(this).find(':input').attr('disabled', 'disabled');
+                            $(this).find('label').css('cursor','default');
+                            $('#success').fadeIn()
+                            $('.modal').modal('hide');
+		                	$('#success').modal('show');
+                        })
+                    },
+                    error: function() {
+                        $('#contactForm').fadeTo( "slow", 1, function() {
+                            $('#error').fadeIn()
+                            $('.modal').modal('hide');
+		                	$('#error').modal('show');
+                        })
+                    }
+                })
+            }
+        })
+    })
+        
+ })(jQuery)
+})
