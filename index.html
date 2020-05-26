@@ -1,261 +1,507 @@
-﻿<!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en"> <![endif]-->
-<!--[if gt IE 8]>
-<!--><html class="no-js" lang="en"><!--<![endif]-->
+﻿<!doctype html>
+<html lang="en">
+
 <head>
-	<meta charset="utf-8">
-	<title>Spectrum API for EOSIO</title>
-	<meta name="description" content="Spectrum streaming API for EOSIO Blockchain">
-	<link rel="stylesheet" href="css/font-awesome.css" />
-	<style>
-		#code-container { width: 1000px; }
-		#footer { 
-			width: 100%; 
-			height: 40px; 
-			padding: 20px;
-			background-color: lightblue; 
-		}
-		.CodeMirror-lines { background-color: #F3FFF4; }
-		.button {
-  			background-color: #4CAF50; /* Green */
-  			border: none;
-  			color: white;
-  			padding: 15px 32px;
-  			text-align: center;
-  			text-decoration: none;
-  			display: inline-block;
-  			font-size: 16px;
-		}
-		h1 {
-			font-size: 40px;
-			font-color: lightgrey;
-		}
-		#account-div {
-			display: none;
-		}
-		#actions-div {
-			display: none;
-		}
-		#table-div {
-			display: none;
-		}
-		#scope-div {
-			display: none;
-		}
-
-
-	</style>
-	<script type="text/javascript" src="js/jquery-2.2.0.min.js"></script>		
-	<script type="text/javascript" src="js/modernizr.custom.js"></script> 
-	<script src="codemirror/lib/codemirror.js"></script>
-	<link rel="stylesheet" href="codemirror/lib/codemirror.css">
-	<script src="codemirror/mode/javascript/javascript.js"></script>
-	<script src="https://spectrum-client.s3.amazonaws.com/spectrum.js"></script>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Spectrum API</title>
+    <link rel="icon" href="img/favicon.ico">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <!-- animate CSS -->
+    <link rel="stylesheet" href="css/animate.css">
+    <!-- owl carousel CSS -->
+    <link rel="stylesheet" href="css/owl.carousel.min.css">
+    <!-- themify CSS -->
+    <link rel="stylesheet" href="css/themify-icons.css">
+    <!-- flaticon CSS -->
+    <link rel="stylesheet" href="css/flaticon.css">
+    <!-- font awesome CSS -->
+    <link href="css/fontawesome/css/all.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/magnific-popup.css">
+    <!-- swiper CSS -->
+    <link rel="stylesheet" href="css/slick.css">
+    <!-- style CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <script type="text/javascript" src="js/modernizr.custom.js"></script> 
+    <script src="codemirror/lib/codemirror.js"></script>
+    <link rel="stylesheet" href="codemirror/lib/codemirror.css">
+    <script src="codemirror/mode/javascript/javascript.js"></script>
+    <script type="text/javascript" src="spectrum.js"></script>
 </head>
+
 <body>
-	<h1>Spectrum - streaming API for EOSIO Blockchains.</h1>
-	<img src="images/spectrum.jpg" height=250>
-	<img src="images/spectrum-eostribe-eosusa.png" height=250>
-	<h3>To allow dApp developers to subscribe and receive events in real time on multiple EOSIO chains.</h3>
-	<div><img src="images/spectrum-diagram.jpg"/></div>
-	<h2>Spectrum API supports 4 streaming API endpoints:</h2>
-	<div id="code-container">
-	<table width="100%">
-		<tr><td width="40%">
-		<input type="radio" name="chain" value="telos" onChange="onStateChange()" checked> Telos <span id="telos-state"></span><br/>
-		<input type="radio" name="chain" value="worbli" onChange="onStateChange()"> Worbli <span id="worbli-state"></span><br/>
-		<input type="radio" name="chain" value="lynx" onChange="onStateChange()"> Lynx <span id="lynx-state"></span><br/>
-		<input type="radio" name="chain" value="wax" onChange="onStateChange()"> WAX <span id="wax-state"></span><br/>
-		<input type="radio" name="chain" value="bos" onChange="onStateChange()"> BOS <span id="bos-state"></span><br/>
-		<input type="radio" name="chain" value="eos" onChange="onStateChange()"> EOS <span id="eos-state"></span><br/>
-		</td><td width="60%">
-		<input type="checkbox" id="get_blocks"  onChange="onStateChange()" checked> get_blocks<br>
-		<input type="checkbox" id="get_actions" onChange="onStateChange()"> get_actions<br>
-		<input type="checkbox" id="get_transaction" onChange="onStateChange()"> get_transaction<br>
-		<input type="checkbox" id="get_table_rows" onChange="onStateChange()"> get_table_rows<br>
-		</td></tr>
-	</table>
-	<h3>JavaScript client code samples:</h3>
-	<h5>Import Spectrum library:<br> &lt;script src="https://spectrum-client.s3.amazonaws.com/spectrum.js"&gt;&lt;/script&gt;</h5>
-	<div id="javascript-demo">
-		<div id="account-div">Account: <input type="text" name="account" id="account" value="eosio" onChange="onStateChange()"></div>
-		<div id="actions-div">Actions: <input type="text" name="actions" id="actions" value="transfer, buyram" onChange="onStateChange()"></div>
-		<div id="table-div">Table: <input type="text" name="table" id="table" value="table" onChange="onStateChange()"></div>
-		<div id="scope-div">Scope: <input type="text" name="scope" id="scope" value="scope" onChange="onStateChange()"></div>
-		<br/><textarea id="js-client-code"></textarea>
-		<input type="button" class="button" value="Run" onClick="runDemoCode(this)">
-		<input type="button" class="button" value="Reload" onClick="location.reload()">
-	</div>
-	<h3>Log window:</h3>
-	<div id="log">...</div>
-	<h3>Spectrum Architecture</h3>
-	<p>Spectrum API supports streaming API over web socket as well as traditional History Search API over REST:</p>
-	<img src="images/spectrum-architecture.png">
-	<p>Spectrum API is implemented in Java with scalability and security in mind. Spectrum is relaying on State History and Chronicle module for underlying blocks and transactions processing with fork handling. Spectrum is fully EOSIO v1.8 compliant.</p>
-	<h3>Additional documentation:</h3>
-	<p><a href="docs.html">Code samples for all endpoints</a></p>
-	<p>GitHub: <a href="https://github.com/EOSTribe/websocket-endpoint">Spectrum API Java websocket endpoint.</a></p>
-	<p>Please see our SteemIt posts for additional information:<br>
-		<a href="https://steemit.com/@eostribe/">https://steemit.com/@eostribe/</a></p>
-	<p>Telegram group: <a href="https://t.me/joinchat/GCDtvROkHhZuIm2wPBG1Pw">Spectrum Tech Group</a></p>
-	<p>Support email: support@spectrumeos.io</p>
-</div>
-<div id="footer">
-	<p>Brought to you by EOS Tribe + EOS USA Block Producers</p>
-</div>
-<script>	
-//Init state:	
-onStateChange();
+    <!--::header part start::-->
+    <header class="main_menu home_menu">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-12">
+                    <nav class="navbar navbar-expand-lg navbar-light">
+                        <a class="navbar-brand" href="index.html"> <img src="img/logo.png" alt="logo"> </a>
+                        <button class="navbar-toggler" type="button" data-toggle="collapse"
+                            data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
 
-var myCodeMirror = CodeMirror.fromTextArea(document.getElementById("js-client-code"));
+                        <div class="collapse navbar-collapse main-menu-item justify-content-end"
+                            id="navbarSupportedContent">
+                            <ul class="navbar-nav align-items-center">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="https://t.me/EOSTribe">Telegram</a>
+                                </li>
+                                <li class="d-none d-lg-block">
+                                    <a class="btn_1" href="https://github.com/EOSTribe/spectrum-websocket-api"><i class="fab fa-github"></i>GitHub</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- Header part end-->
 
-var telosSocket = new WebSocket("wss://telos.spectrumeos.io/streaming");
-var worbliSocket = new WebSocket("wss://worbli.spectrumeos.io/streaming");
-var lynxSocket = new WebSocket("wss://lynx.spectrumeos.io/streaming");
-var waxSocket = new WebSocket("wss://wax.spectrumeos.io/streaming");
-var bosSocket = new WebSocket("wss://bos.spectrumeos.io/streaming");
-var eosSocket = new WebSocket("wss://eos.spectrumeos.io/streaming");
+    <!-- banner part start-->
+    <section class="banner_part">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 col-xl-6">
+                    <div class="banner_text">
+                        <div class="banner_text_iner">
+                            <h5>EOS spectrum API</h5>
+                            <h1>Spectrum ‒ streaming API for EOSIO Blockchains</h1>
+                            <p>To allow dApp developers to subscribe and receive events in real time on multiple EOSIO chains.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- banner part end-->
 
-setOpenCloseErrorHandlers(telosSocket, "telos");
-setOpenCloseErrorHandlers(worbliSocket, "worbli");
-setOpenCloseErrorHandlers(lynxSocket, "lynx");
-setOpenCloseErrorHandlers(waxSocket, "wax");
-setOpenCloseErrorHandlers(bosSocket, "bos");
-setOpenCloseErrorHandlers(eosSocket, "eos");
+    <section class="home-animation">
+        <div class="container">
+            <div class="home-animation__inner">
+                <div class="spectrum-animation speca">
+                    <div class="speca__wrapper">
+                        <div class="speca__bg">
+                            <div class="speca__roads speca-roads">
+                                <div class="speca-roads__chain-places">
+                                    <div class="speca-roads__chain-place"></div>
+                                    <div class="speca-roads__chain-place"></div>
+                                    <div class="speca-roads__chain-place"></div>
+                                    <div class="speca-roads__chain-place"></div>
+                                    <div class="speca-roads__chain-place"></div>
+                                    <div class="speca-roads__chain-place"></div>
+                                </div>
+                                <div class="speca-roads__chain-road">
+                                    <div class="speca-roads__chain-dot"></div>
+                                    <div class="speca-roads__chain-dot"></div>
+                                    <div class="speca-roads__chain-dot"></div>
+                                    <div class="speca-roads__chain-dot"></div>
+                                    <div class="speca-roads__chain-dot"></div>
+                                    <div class="speca-roads__chain-dot"></div>
+                                </div>
+                                <div class="speca-roads__spectrum-place"></div>
+                                <div class="speca-roads__client-road"></div>
+                                <div class="speca-roads__client-place"></div>
+                            </div>
+                            <div class="speca__bg-objects bg-objects">
+                                <div class="bg-objects__card">
+                                    <div class="bg-objects__card-text"></div>
+                                    <div class="bg-objects__card-text"></div>
+                                    <div class="bg-objects__card-text"></div>
+                                    <div class="bg-objects__card-text"></div>
+                                    <div class="bg-objects__card-text"></div>
+                                    <div class="bg-objects__card-text"></div>
+                                    <div class="bg-objects__card-text"></div>
+                                </div>
+                                <div class="bg-objects__calculator">
+                                    <div class="bg-objects__calculator-shadow"></div>
+                                    <div class="bg-objects__calculator-screen"></div>
+                                    <div class="bg-objects__calculator-button"></div>
+                                    <div class="bg-objects__calculator-button"></div>
+                                    <div class="bg-objects__calculator-button"></div>
+                                    <div class="bg-objects__calculator-button"></div>
+                                    <div class="bg-objects__calculator-button"></div>
+                                    <div class="bg-objects__calculator-button"></div>
+                                    <div class="bg-objects__calculator-button"></div>
+                                    <div class="bg-objects__calculator-button"></div>
+                                    <div class="bg-objects__calculator-button"></div>
+                                    <div class="bg-objects__calculator-button"></div>
+                                    <div class="bg-objects__calculator-button"></div>
+                                    <div class="bg-objects__calculator-button"></div>
+                                </div>
+                                <div class="bg-objects__browser speca-browser">
+                                    <div class="speca-browser__header"></div>
+                                    <div class="speca-browser__main">
+                                        <div class="speca-browser__div">
+                                            <div class="speca-browser__text"></div>
+                                            <div class="speca-browser__text"></div>
+                                            <div class="speca-browser__text"></div>
+                                            <div class="speca-browser__text"></div>
+                                            <div class="speca-browser__text"></div>
+                                        </div>
+                                        <div class="speca-browser__div"></div>
+                                        <div class="speca-browser__search">
+                                            <div class="speca-browser__search-text"></div>
+                                            <div class="speca-browser__search-button"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bg-objects__cart-wrapper">
+                                    <div class="bg-objects__cart">
+                                        <div class="bg-objects__cart-geometry"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="speca__objects speca-objects">
+                            <div class="speca-objects__chains">
+                                <div class="speca-objects__chain"></div>
+                                <div class="speca-objects__chain"></div>
+                                <div class="speca-objects__chain"></div>
+                                <div class="speca-objects__chain"></div>
+                                <div class="speca-objects__chain"></div>
+                                <div class="speca-objects__chain"></div>
+                            </div>
+                            <div class="speca-objects__spectrum">
+                                <div class="speca-objects__spectrum-line"></div>
+                                <div class="speca-objects__spectrum-line"></div>
+                                <div class="speca-objects__spectrum-line"></div>
+                                <div class="speca-objects__spectrum-line"></div>
+                                <div class="speca-objects__spectrum-line"></div>
+                                <div class="speca-objects__spectrum-line"></div>
+                            </div>
+                            <div class="speca-objects__client-wrapper">
+                                <div class="speca-objects__client">
+                                    <div class="speca-objects__client-shadow"></div>
+                                    <div class="speca-objects__client-header">
+                                        <div class="speca-objects__client-header-logo-image">
+                                            <div class="speca-objects__client-header-logo-line"></div>
+                                            <div class="speca-objects__client-header-logo-line"></div>
+                                            <div class="speca-objects__client-header-logo-line"></div>
+                                            <div class="speca-objects__client-header-logo-line"></div>
+                                            <div class="speca-objects__client-header-logo-line"></div>
+                                            <div class="speca-objects__client-header-logo-line"></div>
+                                        </div>
+                                        <div class="speca-objects__client-header-logo-text"></div>
+                                    </div>
+                                    <div class="speca-objects__client-main">
+                                        <div class="speca-objects__client-row"></div>
+                                        <div class="speca-objects__client-row"></div>
+                                        <div class="speca-objects__client-row"></div>
+                                        <div class="speca-objects__client-row"></div>
+                                        <div class="speca-objects__client-row"></div>
+                                        <div class="speca-objects__client-row"></div>
+                                        <div class="speca-objects__client-row"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-function setOpenCloseErrorHandlers(socket, name) {
-	socket.onopen = function(event) {
-		document.getElementById(name+"-state").innerHTML = "<font color='green'>[ON]</font>";
-	}
-	socket.onclose = function(event) {
-		document.getElementById(name+"-state").innerHTML = "<font color='red'>[OFF]</font>";
-	}
-	socket.onerror = function(err) {
-		document.getElementById(name+"-state").innerHTML = "<font color='red'>[OFF]</font>";
-	}
-}
+    <!--::review_part start::-->
+    <section class="special_cource padding_top">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-xl-7">
+                    <div class="section_tittle text-center">
+                        <p>code samples</p>
+                        <h2>Spectrum API supports  4&nbsp;streaming API endpoints:</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div id="code-container">
+                    <div class="code-container_main">
+                        <table  class="home-generator__table" width="30%">
+                            <tr>
+                                <td width="15%">
+                                    <input type="radio" name="chain" value="telos" onChange="onStateChange()" checked> Telos <span id="telos-state"></span><br/>
+                                    <input type="radio" name="chain" value="wax" onChange="onStateChange()"> WAX <span id="wax-state"></span><br/>
+                                    <input type="radio" name="chain" value="eos" onChange="onStateChange()"> EOS <span id="eos-state"></span><br/>
+                                    <input type="radio" name="chain" value="algo" onChange="onStateChange()"> Algorand <span id="algo-state"></span><br/>
+                                </td>
+                                <td width="15%">
+                                    <input type="checkbox" id="get_blocks"  onChange="onStateChange()" checked> get_blocks<br>
+                                    <input type="checkbox" id="get_actions" onChange="onStateChange()"> get_actions<br>
+                                    <input type="checkbox" id="get_transaction" onChange="onStateChange()"> get_transaction<br>
+                                    <input type="checkbox" id="get_table_rows" onChange="onStateChange()"> get_table_rows<br>
+                                </td>
+                            </tr>
+                        </table>
+                        <div id="javascript-demo">
+                            <div id="account-div">Account: <input type="text" name="account" id="account" value="eosio" onChange="onStateChange()"></div>
+                            <div id="actions-div">Actions: <input type="text" name="actions" id="actions" value="transfer, buyram" onChange="onStateChange()"></div>
+                            <div id="table-div">Table: <input type="text" name="table" id="table" value="table" onChange="onStateChange()"></div>
+                            <div id="scope-div">Scope: <input type="text" name="scope" id="scope" value="scope" onChange="onStateChange()"></div>
+                            <br/>
+                            <textarea id="js-client-code"></textarea>
+                            <input type="button" class="btn_1" value="Run" onClick="runDemoCode(this)">
+                            <input type="button" class="btn_2" value="Reload" onClick="location.reload()">
+                        </div>
+                    </div>
+                    <div class="code-container_add">
+                        <h3 class="home-generator__subhead">Log window:</h3>
+                        <div id="log">...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--::blog_part end::-->
 
-function onStateChange() {
-	var chain = getSelectedChain();
-	var demobox = document.getElementById("js-client-code");
-	var getblocks = document.getElementById("get_blocks").checked;
-	var getactions = document.getElementById("get_actions").checked;
-	var gettransaction = document.getElementById("get_transaction").checked;
-	var gettablerows = document.getElementById("get_table_rows").checked;
-	var content = "var chain = \""+chain+"\";\n"+
-		"var apikey = \"test-api-key\";\n"+
-		"var onOpenHandler = function(e) { \n	console.log(\"[open] Connection established\"); \n};\n"+
-		"var onMessageHandler = function(event) {\n	console.log(event.data);\n	};\n"+
-		"var onCloseHandler = function(event) {\n	console.log(\"[close] Connection closed\");\n	};\n"+
-		"var onErrorHandler = function(error) {\n	console.log(\"[error] ${error.message}\");\n	};\n"+
-		"var socket = open_connection(chain, apikey, onOpenHandler, onMessageHandler, onCloseHandler, onErrorHandler);\n\n";
-	if(getblocks) {
-		content += "get_blocks(socket);\n\n";
-	}
-	if(getactions) {
-		document.getElementById("account-div").style.display = "block";
-		document.getElementById("actions-div").style.display = "block";
-		var account = document.getElementById("account").value;
-		var actions = document.getElementById("actions").value;
-		actions = actions.replace(/ /g,'');
-		actions = actions.replace(/,/g, '\",\"');
-		content += "get_actions(socket, \""+account+"\", [\""+actions+"\"]);\n\n";
-	} 
-	if(gettransaction) {
-		document.getElementById("account-div").style.display = "block";
-		var account = document.getElementById("account").value;
-		content += "get_transaction(socket, \""+account+"\");\n\n";
-	} 
-	if(gettablerows) {
-		document.getElementById("account-div").style.display = "block";
-		document.getElementById("table-div").style.display = "block";
-		document.getElementById("scope-div").style.display = "block";
-		var account = document.getElementById("account").value;
-		var table = document.getElementById("table").value;
-		var scope = document.getElementById("scope").value;
-		content += "get_table_rows(socket, \""+account+"\", \""+table+"\", \""+scope+"\");\n\n";
-	}
-	demobox.value = content;
-	if(myCodeMirror) {
-		myCodeMirror.setValue(demobox.value);
-	}
-}
+    <!-- code_samples counter start -->
+    <section class="code_samples">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-sm-12">
+                    <div class="single_code_samples">
+                        <h4>JavaScript client code samples:</h4>
+                        <span>Import Spectrum library</span>
+                        <a href="docs.html" class="btn_1 single_code_samples__link">Code samples for all endpoints</a>
+                    </div>
+                </div>
+                <div class="col-lg-8 col-sm-12">
+                    <div class="single_code_samples">
+                        <span class="single_code_samples__sample">&lt;script src="https://spectrumeos.io/spectrum.js"&gt;&lt;/script&gt;</span class="single_code_samples">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- code_samples counter end -->
 
-function runDemoCode(button) {
-	var chain = getSelectedChain();
-	var getblocks = document.getElementById("get_blocks").checked;
-	var getactions = document.getElementById("get_actions").checked;
-	var gettransaction = document.getElementById("get_transaction").checked;
-	var gettablerows = document.getElementById("get_table_rows").checked;
-	var socket;
-	if(chain == "telos") {
-		socket = telosSocket;
-	} else if(chain == "worbli") {
-		socket = worbliSocket;
-	} else if(chain == "lynx") {
-		socket = lynxSocket;
-	} else if(chain == "wax") {
-		socket = waxSocket;
-	} else if(chain == "bos") {
-		socket = bosSocket;
-	} else if(chain == "eos") {
-		socket = eosSocket;
-	} 
-	if(socket) {
-		resetMessageHandlers();
-		socket.onmessage = function(event) {	
-			html_log(event.data);	
-		};
-		if(getblocks) {
-			get_blocks(socket);
-		}
-		if(getactions) {
-			var account = document.getElementById("account").value;
-			var actions = document.getElementById("actions").value;
-			actions = actions.replace(/ /g,'');
-			var actionsArr = actions.split(',');
-			get_actions(socket, account, actionsArr);
-		}
-		if(gettransaction) {
-			var account = document.getElementById("account").value;
-			get_transaction(socket, account);
-		}
-		if(gettablerows) {
-			var account = document.getElementById("account").value;
-			var table = document.getElementById("table").value;
-			var scope = document.getElementById("scope").value;
-			get_table_rows(socket, account, table, scope);
-		}
-		// Disable Run button:
-		button.disabled = true;
-	} else {
-		alert("Failed to get socket connection for "+chain);
-	}
-}
+    <!-- learning part start-->
+    <section class="advance_feature learning_part">
+        <div class="container">
+            <div class="row align-items-sm-center align-items-xl-stretch">
+                <div class="col-md-6 col-lg-6">
+                    <div class="learning_member_text">
+                        <h2>Spectrum Architecture</h2>
+                        <p>Spectrum API supports streaming API over web socketas well as well as traditional
+                            History Search API over REST.</p>
+                        <p>Spectrum API is implemented in Java with scalability and security in mind. Spectrum
+                            is relaying on State History and Chronicle module for underlying blocks and
+                            transactions processing with fork handling. Spectrum is fully EOSIO v2.x compliant.</p>
+            <p>Spectrum API now supports Algorand Blockchain [Only get_blocks support at this moment].</p>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6">
+                    <img src="img/spectrum-architecture.png" alt="">
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- learning part end-->
 
-function resetMessageHandlers() {
-	if(telosSocket) telosSocket.onmessage = null;
-	if(worbliSocket) worbliSocket.onmessage = null;
-	if(lynxSocket) lynxSocket.onmessage = null;
-	if(waxSocket) waxSocket.onmessage = null;
-	if(bosSocket) bosSocket.onmessage = null;
-	if(eosSocket) eosSocket.onmessage = null;
-}
+    <!-- footer part start-->
+    <footer class="footer-area">
+        <div class="container">
+            <div class="row justify-content-between">
+                <div class="col-sm-12 col-xl-7">
+                    <div class="single-footer-widget footer_1">
+                        <a href="index.html"> <img src="img/logo.png" alt=""> </a>
+                        <p>Spectrum - streaming API for EOSIO and Algorand Blockchains.</p>
+                        <p>To allow dApp developers to subscribe and receive events in real time on multiple chains.</p>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-xl-5">
+                    <div class="single-footer-widget footer_2">
+                        <h4>Contact us</h4>
+                        <div class="contact_info">
+                            <div class="contact_info-icons">
+                                <a href="#" class="contact_info-icon-link">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                                <a href="#" class="contact_info-icon-link">
+                                    <i class="fab fa-telegram"></i>
+                                </a>
+                            </div>
+                            <div class="contact_info-links">
+                                <p><span>Blog: </span> steemit.com/@eostribe</p>
+                                <p><span>Support email: </span> eugene@eostribe.io</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-function getSelectedChain() { 
-    var ele = document.getElementsByName('chain'); 
-    for(i = 0; i < ele.length; i++) { 
-        if(ele[i].checked) {
-	        return ele[i].value; 
+        </div>
+    </footer>
+    <!-- footer part end-->
+
+    <!-- jquery plugins here-->
+    <!-- jquery -->
+    <script src="js/jquery-1.12.1.min.js"></script>
+    <!-- popper js -->
+    <script src="js/popper.min.js"></script>
+    <!-- bootstrap js -->
+    <script src="js/bootstrap.min.js"></script>
+    <!-- easing js -->
+    <script src="js/jquery.magnific-popup.js"></script>
+    <!-- swiper js -->
+    <script src="js/swiper.min.js"></script>
+    <!-- swiper js -->
+    <script src="js/masonry.pkgd.js"></script>
+    <!-- particles js -->
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/jquery.nice-select.min.js"></script>
+    <!-- swiper js -->
+    <script src="js/slick.min.js"></script>
+    <script src="js/jquery.counterup.min.js"></script>
+    <script src="js/waypoints.min.js"></script>
+    <!-- custom js -->
+    <script>    
+        //Init state:   
+        onStateChange();
+        
+        var myCodeMirror = CodeMirror.fromTextArea(document.getElementById("js-client-code"));
+        
+        var telosSocket = new WebSocket("wss://telos.spectrumeos.io/streaming");
+        var waxSocket = new WebSocket("wss://wax.spectrumeos.io/streaming");
+        var eosSocket = new WebSocket("wss://eos.spectrumeos.io/streaming");
+        var algoSocket = new WebSocket("wss://algo.spectrumeos.io/streaming");
+        
+        setOpenCloseErrorHandlers(telosSocket, "telos");
+        setOpenCloseErrorHandlers(waxSocket, "wax");
+        setOpenCloseErrorHandlers(eosSocket, "eos");
+        setOpenCloseErrorHandlers(algoSocket, "algo");
+        
+        function setOpenCloseErrorHandlers(socket, name) {
+            socket.onopen = function(event) {
+                document.getElementById(name+"-state").innerHTML = "<font color='green'>[ON]</font>";
+            }
+            socket.onclose = function(event) {
+                document.getElementById(name+"-state").innerHTML = "<font color='red'>[OFF]</font>";
+            }
+            socket.onerror = function(err) {
+                document.getElementById(name+"-state").innerHTML = "<font color='red'>[OFF]</font>";
+            }
         }
-    }
- } 
-
-function html_log(data) {
-  var divLog = document.getElementById("log");
-  divLog.innerHTML = "<p>" + data + "</p>";
-}
- 
-</script>
+        
+        function onStateChange() {
+            var chain = getSelectedChain();
+            var demobox = document.getElementById("js-client-code");
+            var getblocks = document.getElementById("get_blocks").checked;
+            var getactions = document.getElementById("get_actions").checked;
+            var gettransaction = document.getElementById("get_transaction").checked;
+            var gettablerows = document.getElementById("get_table_rows").checked;
+            var content = "var chain = \""+chain+"\";\n"+
+                "var apikey = \"test-api-key\";\n"+
+                "var onOpenHandler = function(e) { \n   console.log(\"[open] Connection established\"); \n};\n"+
+                "var onMessageHandler = function(event) {\n console.log(event.data);\n  };\n"+
+                "var onCloseHandler = function(event) {\n   console.log(\"[close] Connection closed\");\n   };\n"+
+                "var onErrorHandler = function(error) {\n   console.log(\"[error] ${error.message}\");\n    };\n"+
+                "var socket = open_connection(chain, apikey, onOpenHandler, onMessageHandler, onCloseHandler, onErrorHandler);\n\n";
+            if(getblocks) {
+                content += "get_blocks(socket);\n\n";
+            }
+            if(getactions) {
+                document.getElementById("account-div").style.display = "block";
+                document.getElementById("actions-div").style.display = "block";
+                var account = document.getElementById("account").value;
+                var actions = document.getElementById("actions").value;
+                actions = actions.replace(/ /g,'');
+                actions = actions.replace(/,/g, '\",\"');
+                content += "get_actions(socket, \""+account+"\", [\""+actions+"\"]);\n\n";
+            } 
+            if(gettransaction) {
+                document.getElementById("account-div").style.display = "block";
+                var account = document.getElementById("account").value;
+                content += "get_transaction(socket, \""+account+"\");\n\n";
+            } 
+            if(gettablerows) {
+                document.getElementById("account-div").style.display = "block";
+                document.getElementById("table-div").style.display = "block";
+                document.getElementById("scope-div").style.display = "block";
+                var account = document.getElementById("account").value;
+                var table = document.getElementById("table").value;
+                var scope = document.getElementById("scope").value;
+                content += "get_table_rows(socket, \""+account+"\", \""+table+"\", \""+scope+"\");\n\n";
+            }
+            demobox.value = content;
+            if(myCodeMirror) {
+                myCodeMirror.setValue(demobox.value);
+            }
+        }
+        
+        function runDemoCode(button) {
+            var chain = getSelectedChain();
+            var getblocks = document.getElementById("get_blocks").checked;
+            var getactions = document.getElementById("get_actions").checked;
+            var gettransaction = document.getElementById("get_transaction").checked;
+            var gettablerows = document.getElementById("get_table_rows").checked;
+            var socket;
+            if(chain == "telos") {
+                socket = telosSocket;
+            } else if(chain == "wax") {
+                socket = waxSocket;
+            } else if(chain == "eos") {
+                socket = eosSocket;
+            } else if(chain == "algo") {
+        socket = algoSocket;
+        }
+            if(socket) {
+                resetMessageHandlers();
+                socket.onmessage = function(event) {    
+                    html_log(event.data);   
+                };
+                if(getblocks) {
+                    get_blocks(socket);
+                }
+                if(getactions) {
+                    var account = document.getElementById("account").value;
+                    var actions = document.getElementById("actions").value;
+                    actions = actions.replace(/ /g,'');
+                    var actionsArr = actions.split(',');
+                    get_actions(socket, account, actionsArr);
+                }
+                if(gettransaction) {
+                    var account = document.getElementById("account").value;
+                    get_transaction(socket, account);
+                }
+                if(gettablerows) {
+                    var account = document.getElementById("account").value;
+                    var table = document.getElementById("table").value;
+                    var scope = document.getElementById("scope").value;
+                    get_table_rows(socket, account, table, scope);
+                }
+                // Disable Run button:
+                button.disabled = true;
+            } else {
+                alert("Failed to get socket connection for "+chain);
+            }
+        }
+        
+        function resetMessageHandlers() {
+            if(telosSocket) telosSocket.onmessage = null;
+            if(waxSocket) waxSocket.onmessage = null;
+            if(eosSocket) eosSocket.onmessage = null;
+            if(algoSocket) algoSocket.onmessage = null;
+        }
+        
+        function getSelectedChain() { 
+            var ele = document.getElementsByName('chain'); 
+            for(i = 0; i < ele.length; i++) { 
+                if(ele[i].checked) {
+                    return ele[i].value; 
+                }
+            }
+            } 
+        
+        function html_log(data) {
+            var divLog = document.getElementById("log");
+            divLog.innerHTML = "<p>" + data + "</p>";
+        }
+            
+    </script>
+    <script src="js/custom.js"></script>
 </body>
-</html>
